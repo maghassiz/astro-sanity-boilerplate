@@ -1,0 +1,30 @@
+---
+interface Props {
+  href: string;
+  label: string;
+  variant: 'primary' | 'secondary' | 'dark';
+  padding?: string;
+  class?: string;
+}
+
+const {
+  href,
+  label,
+  variant,
+  padding = 'pl-4 pr-5 py-3',
+  class: className = '',
+} = Astro.props;
+
+const VARIANT_STYLES = {
+  primary: 'bg-accent text-ink hover:bg-brand hover:text-background',
+  secondary: 'bg-background text-ink hover:bg-ink hover:text-background border-border',
+  dark: 'bg-ink text-background hover:bg-background hover:text-ink hover:border-ink',
+};
+---
+
+<a
+  href={href}
+  class={`${VARIANT_STYLES[variant]} flex gap-3 items-center justify-center rounded-lg border-2 border-transparent transition-colors duration-300 ${padding} ${className}`}
+>
+  <span class="font-body font-medium text-body-md whitespace-nowrap">{label}</span>
+</a>

@@ -1,0 +1,56 @@
+{
+  "name": "astro-sanity-boilerplate",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "prebuild": "node --env-file-if-exists=.env scripts/generate-redirects.mjs",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "lint": "eslint .",
+    "typegen": "sanity schema extract --path=schema.json --enforce-required-fields --force && sanity typegen generate",
+    "postinstall": "simple-git-hooks"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,mjs,ts,tsx,astro}": "eslint --fix"
+  },
+  "dependencies": {
+    "@astrojs/react": "^6.0.4",
+    "@astrojs/sitemap": "^3.7.3",
+    "@fontsource/inter": "^5.3.0",
+    "@portabletext/to-html": "^6.0.0",
+    "@sanity/astro": "^3.5.1",
+    "@sanity/client": "^8.3.0",
+    "@sanity/vision": "^6.11.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.5",
+    "astro": "^7.2.8",
+    "groq": "^6.11.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "sanity": "^6.11.0",
+    "tailwindcss": "^4.3.3"
+  },
+  "allowScripts": {
+    "esbuild": true
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@aws-sdk/client-s3": "^3.1119.0",
+    "@sanity/schema": "^6.11.0",
+    "eslint": "^10.10.0",
+    "eslint-plugin-astro": "^3.1.0",
+    "lint-staged": "^17.5.1",
+    "simple-git-hooks": "^2.14.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.70.0"
+  }
+}

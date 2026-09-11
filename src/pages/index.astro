@@ -1,0 +1,54 @@
+---
+import { sanityClient } from 'sanity:client';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/home/Hero.astro';
+import Faq from '../components/home/Faq.astro';
+import Footer from '../components/shared/Footer.astro';
+import { pageBySlugQuery, siteSettingsQuery } from '../sanity/queries';
+
+// `any` here until `npm run typegen` has been run against a real Sanity
+// project — swap for the generated `PageBySlugQueryResult` type at that point
+// (see src/sanity.types.ts once it exists, and CLAUDE.md's typegen section).
+const page: any = await sanityClient.fetch(pageBySlugQuery, { slug: 'home' });
+
+if (!page) {
+  throw new Error('Missing "page" document with slug "home" in Sanity — run scripts/seed-example-page.mjs.');
+}
+
+const heroSection = page.sections.find((s: any) => s._type === 'heroSection');
+if (!heroSection) {
+  throw new Error('Home page document has no heroSection — Hero requires one.');
+}
+
+// Site Settings singleton provides the SEO fallback when this page's own
+// `seo` object (Studio-editable per-document override) doesn't set a field.
+const siteSettings = await sanityClient.fetch(siteSettingsQuery);
+
+const seoTitle = page.seo?.title ?? siteSettings?.defaultSeoTitle ?? 'My Project';
+const seoDescription = page.seo?.description ?? siteSettings?.defaultSeoDescription ?? 'Replace this with your homepage description.';
+const seoOgImage = page.seo?.ogImage ?? siteSettings?.defaultOgImage;
+---
+
+<BaseLayout title={seoTitle} description={seoDescription} ogImage={seoOgImage}>
+	<header>
+		<Hero
+			headline={heroSection.headline}
+			subheading={heroSection.subheading}
+			primaryButtonLabel={heroSection.primaryButtonLabel ?? undefined}
+			primaryButtonHref={heroSection.primaryButtonHref ?? undefined}
+			secondaryButtonLabel={heroSection.secondaryButtonLabel ?? undefined}
+			secondaryButtonHref={heroSection.secondaryButtonHref ?? undefined}
+		/>
+	</header>
+	<main>
+		{page.sections.map((section: any) => {
+			switch (section._type) {
+				case 'faqSection':
+					return <Faq />;
+				default:
+					return null;
+			}
+		})}
+	</main>
+	<Footer />
+</BaseLayout>

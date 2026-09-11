@@ -1,0 +1,4 @@
+# Cloudflare Pages redirect rules — generated from Sanity "redirect" documents
+# by scripts/generate-redirects.mjs. Do not hand-edit; manage redirects in
+# Studio instead and rebuild (this runs as a prebuild step). Empty until the
+# first document/build.

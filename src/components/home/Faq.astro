@@ -1,0 +1,23 @@
+---
+import { sanityClient } from 'sanity:client';
+import { faqsQuery } from '../../sanity/queries';
+
+// Demonstrates the marker-section pattern (see src/sanity/schemaTypes/sections.ts:
+// faqSection): the page builder just marks *where* this renders — the content
+// itself comes from the separate `faq` collection, queried directly here.
+// `any` until `npm run typegen` has been run — swap for the generated
+// `FaqsQueryResult` type at that point.
+const faqs: any[] = await sanityClient.fetch(faqsQuery);
+---
+
+<section class="flex flex-col gap-8 items-start px-[100px] max-lg:px-10 max-md:px-4 py-20 w-full max-w-[900px] mx-auto">
+  <h2 class="font-heading text-h2 text-ink w-full">Frequently asked questions</h2>
+  <div class="flex flex-col gap-6 w-full">
+    {faqs.map((faq) => (
+      <div class="flex flex-col gap-2 border-b border-border pb-6">
+        <p class="font-body font-medium text-body-lg text-ink">{faq.question}</p>
+        <p class="font-body font-normal text-body-md text-muted">{faq.answer}</p>
+      </div>
+    ))}
+  </div>
+</section>

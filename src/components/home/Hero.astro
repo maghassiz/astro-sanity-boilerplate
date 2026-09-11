@@ -1,0 +1,37 @@
+---
+import Navigation from '../Navigation';
+import Button from '../shared/Button.astro';
+
+interface Props {
+  headline: string;
+  subheading: string;
+  primaryButtonLabel?: string;
+  primaryButtonHref?: string;
+  secondaryButtonLabel?: string;
+  secondaryButtonHref?: string;
+}
+
+const {
+  headline,
+  subheading,
+  primaryButtonLabel = 'Get started',
+  primaryButtonHref = '/contact-us',
+  secondaryButtonLabel = 'Contact us',
+  secondaryButtonHref = '/contact-us',
+} = Astro.props;
+---
+
+<div data-hero class="flex flex-col gap-12 min-h-[70vh] items-center justify-center w-full bg-ink px-4">
+  <Navigation client:load />
+
+  <div class="flex flex-col gap-6 items-center text-center max-w-[720px] w-full">
+    <p data-reveal class="font-heading text-h1 text-background w-full">{headline}</p>
+    <p data-reveal style="--reveal-delay: 100ms" class="font-body font-normal text-body-lg text-background w-full">
+      {subheading}
+    </p>
+    <div data-reveal="fade" style="--reveal-delay: 200ms" class="flex gap-4 items-center justify-center pt-2">
+      <Button href={primaryButtonHref} label={primaryButtonLabel} variant="primary" />
+      <Button href={secondaryButtonHref} label={secondaryButtonLabel} variant="secondary" />
+    </div>
+  </div>
+</div>

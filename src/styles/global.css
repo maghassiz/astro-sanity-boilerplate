@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+/*
+ * Inter — free (SIL Open Font License), self-hosted via @fontsource/inter
+ * so there's zero external network request for body text out of the box.
+ * Swap/add weights as the design needs.
+ */
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/700.css";
+
+/*
+ * Design tokens — placeholder values. Replace with the real brand palette
+ * and type scale (see DESIGN-TOKENS.md for how to document where each value
+ * came from, e.g. a Figma file/node). Once set here, `bg-brand`,
+ * `text-ink`, `font-heading text-h1`, etc. become Tailwind utility classes
+ * everywhere in the project — no separate tailwind.config file needed
+ * (Tailwind v4, configured via @tailwindcss/vite in astro.config.mjs).
+ *
+ * If a heading font is a licensed/commercial font, host it on R2 instead of
+ * committing it to git (see scripts/upload-to-r2.mjs + scripts/set-r2-cors.mjs
+ * for the one-time CORS setup fonts specifically need) and reference it here
+ * with an @font-face pointing at R2_PUBLIC_URL. Free fonts can go through
+ * @fontsource/* like Inter above instead.
+ */
+
+@theme {
+  /* Colors — TODO: replace with real brand palette */
+  --color-brand: #5D4BFF;      /* primary accent */
+  --color-ink: #130C3C;        /* dark text / dark backgrounds */
+  --color-accent: #FFD641;     /* primary CTA buttons */
+  --color-background: #FBFBFF; /* page background */
+  --color-muted: #676479;      /* secondary/muted text */
+  --color-border: #E1E1EC;     /* dividers, input borders */
+  --color-surface: #F2F2F7;    /* subtle section backgrounds */
+
+  /* Typography */
+  --font-heading: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /*
+   * Sizes in rem (base 16px) instead of flat px, so text respects the user's
+   * browser/OS font-size preference. Letter-spacing in em (relative to the
+   * element's own font-size) so it scales proportionally with the size.
+   */
+  --text-h1: 3.5rem;      /* 56px */
+  --text-h1--line-height: 1.1;
+  --text-h1--letter-spacing: -0.025em;
+  --text-h1--font-weight: 700;
+
+  --text-h2: 3rem;        /* 48px */
+  --text-h2--line-height: 1.1;
+  --text-h2--letter-spacing: -0.025em;
+  --text-h2--font-weight: 700;
+
+  --text-h3: 2.5rem;      /* 40px */
+  --text-h3--line-height: 1.2;
+  --text-h3--letter-spacing: -0.025em;
+  --text-h3--font-weight: 700;
+
+  --text-body-lg: 1.25rem;  /* 20px */
+  --text-body-lg--line-height: 1.5;
+  --text-body-lg--letter-spacing: -0.01em;
+  --text-body-lg--font-weight: 400;
+
+  --text-body-md: 1rem;     /* 16px */
+  --text-body-md--line-height: 1.5;
+  --text-body-md--letter-spacing: -0.01em;
+  --text-body-md--font-weight: 400;
+
+  --text-body-sm: 0.875rem; /* 14px */
+  --text-body-sm--line-height: 1.5;
+  --text-body-sm--letter-spacing: 0em;
+  --text-body-sm--font-weight: 400;
+}
+
+/*
+ * Sitewide scroll-reveal: fade + rise into place the first time an element
+ * crosses into the viewport (see the shared observer script in Footer.astro,
+ * which runs on every page). Opt in per-element with data-reveal; stagger
+ * siblings with a `--reveal-delay: <ms>` inline style. Respects
+ * prefers-reduced-motion.
+ */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal="fade"] {
+  transform: none;
+}
+
+[data-reveal].is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

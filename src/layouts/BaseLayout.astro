@@ -1,0 +1,90 @@
+---
+import { sanityClient } from 'sanity:client';
+import '../styles/global.css';
+import { siteSettingsQuery } from '../sanity/queries';
+
+// Cloudflare Web Analytics — no cookies, so no consent banner needed. Empty
+// by default (schema-validated in astro.config.mjs) so local/preview builds
+// don't send real traffic to the production analytics account; set once the
+// beacon token exists (Cloudflare dashboard → Analytics → Web Analytics →
+// add site → copy the token).
+const CF_BEACON_TOKEN = import.meta.env.PUBLIC_CF_BEACON_TOKEN;
+
+interface Props {
+  title: string;
+  description: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  noindex?: boolean;
+}
+
+// Site-wide singleton (see src/sanity/schemaTypes/siteSettings.ts) — sources
+// the Organization JSON-LD and the OG image fallback below. title/description
+// stay required props (not sourced here) so every call site keeps working
+// unchanged; a page opts into the site default by passing its own resolved
+// `page.seo?.title ?? siteSettings.defaultSeoTitle`, not by this layout
+// reaching for it implicitly.
+const siteSettings = await sanityClient.fetch(siteSettingsQuery);
+
+const {
+  title,
+  description,
+  ogImage = siteSettings?.defaultOgImage,
+  ogType = 'website',
+  noindex = false,
+} = Astro.props;
+
+const siteName = siteSettings?.siteName ?? 'My Project';
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+const organizationSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'Organization',
+	name: siteSettings?.organizationName ?? siteName,
+	url: Astro.site?.toString(),
+	logo: siteSettings?.organizationLogoUrl,
+};
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalURL} />
+		{noindex && <meta name="robots" content="noindex, nofollow" />}
+
+		<meta property="og:type" content={ogType} />
+		<meta property="og:site_name" content={siteName} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonicalURL} />
+		{ogImage && <meta property="og:image" content={ogImage} />}
+
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		{ogImage && <meta name="twitter:image" content={ogImage} />}
+
+		<script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} is:inline />
+
+		{CF_BEACON_TOKEN && (
+			<script
+				defer
+				src="https://static.cloudflareinsights.com/beacon.min.js"
+				data-cf-beacon={`{"token": "${CF_BEACON_TOKEN}"}`}
+				is:inline
+			/>
+		)}
+
+		<slot name="head" />
+	</head>
+	<body class="bg-background">
+		<slot />
+	</body>
+</html>

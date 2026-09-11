@@ -1,0 +1,51 @@
+name: Deploy to Cloudflare Pages
+
+# Cloudflare Pages isn't connected to this repo via its own Git integration
+# (that requires an interactive dashboard OAuth step) — this workflow is the
+# auto-deploy substitute: build in CI, then push the static output with wrangler.
+#
+# repository_dispatch: fire this from a Sanity webhook on publish (Sanity's
+# webhook config supports custom headers + a GROQ-shaped body, so it can call
+# GitHub's /dispatches API with no intermediate serverless function) — that's
+# what makes "publish in Sanity" actually update the live site without a
+# manual redeploy, since the site builds statically at CI time, not per-request.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  repository_dispatch:
+    types: [sanity-publish]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+          cache: npm
+
+      - run: npm ci
+
+      # npm's "prebuild" lifecycle script runs scripts/generate-redirects.mjs
+      # before "build" automatically — it needs the same Sanity env vars, so
+      # they're set on this step rather than a separate one.
+      - run: npm run build
+        env:
+          PUBLIC_SANITY_PROJECT_ID: ${{ secrets.PUBLIC_SANITY_PROJECT_ID }}
+          PUBLIC_SANITY_DATASET: ${{ secrets.PUBLIC_SANITY_DATASET }}
+          PUBLIC_CONTACT_FORM_ENDPOINT: ${{ secrets.PUBLIC_CONTACT_FORM_ENDPOINT }}
+          R2_PUBLIC_URL: ${{ secrets.R2_PUBLIC_URL }}
+          PUBLIC_SITE_URL: ${{ secrets.PUBLIC_SITE_URL }}
+          PUBLIC_CF_BEACON_TOKEN: ${{ secrets.PUBLIC_CF_BEACON_TOKEN }}
+
+      - name: Deploy to Cloudflare Pages
+        # TODO: replace --project-name with your Cloudflare Pages project name
+        run: npx wrangler pages deploy dist --project-name REPLACE-ME --branch main --commit-dirty=true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

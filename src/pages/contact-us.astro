@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Navigation from '../components/Navigation';
+import ContactForm from '../components/contact/ContactForm.tsx';
+import Footer from '../components/shared/Footer.astro';
+---
+
+<BaseLayout title="Contact us — My Project" description="Get in touch with us.">
+	<Navigation client:load variant="light" />
+	<main>
+		<ContactForm client:load />
+	</main>
+	<Footer />
+</BaseLayout>

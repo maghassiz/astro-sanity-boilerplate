@@ -1,0 +1,66 @@
+---
+import Button from './Button.astro';
+// TODO: replace with your real footer link columns
+---
+
+<footer class="flex flex-col gap-16 items-center px-[100px] max-lg:px-10 max-md:px-4 pt-24 pb-12 w-full bg-ink">
+  <div class="flex flex-col gap-6 items-center text-center text-background max-w-[720px] w-full">
+    <h2 data-reveal class="font-heading text-h2 w-full">Ready to get started?</h2>
+    <p data-reveal style="--reveal-delay: 100ms" class="font-body font-normal text-body-lg w-full">
+      Replace this with your own closing pitch.
+    </p>
+    <div data-reveal style="--reveal-delay: 200ms" class="flex gap-4 items-start justify-center pt-2">
+      <Button href="/contact-us" label="Contact us" variant="primary" />
+    </div>
+  </div>
+
+  <div class="flex items-start justify-between max-lg:flex-col max-lg:gap-8 w-full max-w-[1440px] mx-auto">
+    <p class="font-heading text-h6 text-background">My Project</p>
+
+    <div class="flex gap-8">
+      <div class="flex flex-col gap-3 items-start text-background">
+        <p class="font-body font-medium text-body-md w-full">Product</p>
+        <a href="/product" class="font-body font-normal text-body-md hover:underline">Product</a>
+        <a href="/pricing" class="font-body font-normal text-body-md hover:underline">Pricing</a>
+      </div>
+      <div class="flex flex-col gap-3 items-start text-background">
+        <p class="font-body font-medium text-body-md w-full">Company</p>
+        <a href="/about" class="font-body font-normal text-body-md hover:underline">About</a>
+        <a href="/contact-us" class="font-body font-normal text-body-md hover:underline">Contact us</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex items-center justify-between max-lg:flex-col max-lg:gap-4 w-full max-w-[1440px] mx-auto font-body font-normal text-body-sm text-background">
+    <p>© {new Date().getFullYear()} My Project. All rights reserved.</p>
+    <div class="flex gap-4">
+      <a href="/cookie-policy" class="hover:underline">Cookie Settings</a>
+      <a href="/privacy-policy" class="hover:underline">Privacy Policy</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Sitewide scroll reveal: fades/rises any [data-reveal] element into place
+  // the first time it enters the viewport, then stops watching it (a one-time
+  // entrance, not a repeating scroll effect). Lives here because Footer is
+  // the one component every page includes, so this only needs to exist once.
+  const revealEls = document.querySelectorAll<HTMLElement>('[data-reveal]');
+
+  if (revealEls.length && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15, rootMargin: '0px 0px -80px 0px' }
+    );
+    revealEls.forEach((el) => observer.observe(el));
+  } else {
+    revealEls.forEach((el) => el.classList.add('is-revealed'));
+  }
+</script>
