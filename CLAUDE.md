@@ -184,6 +184,16 @@ just to satisfy one caller.
   Reference for the pattern any future seed script should follow.
 - `google-apps-script-contact-form.gs` — backend for `ContactForm.tsx` on a
   static (serverless) site; see its header comment for one-time deploy steps.
+- `framer-import/` — one-time CSV → Sanity importer, for migrating an
+  existing site's CMS content (Framer, Webflow, or anything that exports a
+  collection to CSV) into this project. `import.mjs` ships one working
+  example (`faq`, backed by `data/FAQ.csv`) — copy it as the template for a
+  real project's collections. `r2.mjs` (`mirrorImageToR2`) downloads any
+  image URL from the CSV and re-uploads it to R2, deduping on re-run; use it
+  for image fields. `html-to-blocks.mjs` (`htmlToPortableText`) converts
+  HTML-formatted CSV cells into Sanity Portable Text blocks; use it for
+  rich-text fields. Run via `npm run import:framer -- [target]` (omit
+  `target` to run every importer).
 
 ## Dev tooling
 

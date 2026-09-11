@@ -13,6 +13,7 @@
     "astro": "astro",
     "lint": "eslint .",
     "typegen": "sanity schema extract --path=schema.json --enforce-required-fields --force && sanity typegen generate",
+    "import:framer": "node --env-file=.env scripts/framer-import/import.mjs",
     "postinstall": "simple-git-hooks"
   },
   "simple-git-hooks": {
@@ -45,9 +46,12 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "@aws-sdk/client-s3": "^3.1119.0",
+    "@portabletext/block-tools": "^6.0.0",
     "@sanity/schema": "^6.11.0",
+    "csv-parse": "^7.0.2",
     "eslint": "^10.10.0",
     "eslint-plugin-astro": "^3.1.0",
+    "jsdom": "^25.0.1",
     "lint-staged": "^17.5.1",
     "simple-git-hooks": "^2.14.0",
     "typescript": "^6.0.3",
